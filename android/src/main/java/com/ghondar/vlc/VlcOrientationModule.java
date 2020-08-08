@@ -28,14 +28,14 @@ import com.facebook.react.uimanager.IllegalViewOperationException;
 
 import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
-public class OrientationModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
+public class VlcOrientationModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
     private final ReactApplicationContext ctx;
 
     final OrientationEventListener mOrientationEventListener;
-    private Integer mOrientationValue;
-    private String mOrientation;
-    private String mSpecificOrientation;
-    final private String[] mOrientations;
+    private Integer mVlcOrientationValue;
+    private String mVlcOrientation;
+    private String mSpecificVlcOrientation;
+    final private String[] mVlcOrientations;
 
     private boolean mHostActive = false;
 
@@ -55,26 +55,26 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
-    public OrientationModule(ReactApplicationContext reactContext) {
+    public VlcOrientationModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.ctx = reactContext;
 
-        mOrientations = isLandscapeDevice() ? ORIENTATIONS_LANDSCAPE_DEVICE : ORIENTATIONS_PORTRAIT_DEVICE;
+        mVlcOrientations = isLandscapeDevice() ? ORIENTATIONS_LANDSCAPE_DEVICE : ORIENTATIONS_PORTRAIT_DEVICE;
 
         mOrientationEventListener = new OrientationEventListener(reactContext, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
             public void onOrientationChanged(int orientationValue) {
                 Log.d("data:", "" + orientationValue);
 
-                if (!mHostActive || isDeviceOrientationLocked() || !ctx.hasActiveCatalystInstance())
+                if (!mHostActive || isDeviceVlcOrientationLocked() || !ctx.hasActiveCatalystInstance())
                     return;
 
-                mOrientationValue = orientationValue;
+                mVlcOrientationValue = orientationValue;
 
 
                 Log.d("data:", "" + orientationValue);
 
-                if (mOrientation != null && mSpecificOrientation != null) {
+                if (mVlcOrientation != null && mSpecificVlcOrientation != null) {
                     final int halfSector = ACTIVE_SECTOR_SIZE / 2;
                     if ((orientationValue % 90) > halfSector
                             && (orientationValue % 90) < (90 - halfSector)) {
@@ -82,26 +82,26 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
                     }
                 }
 
-                final String orientation = getOrientationStringWhenChanging(orientationValue);
-                final String specificOrientation = getSpecificOrientationString(orientationValue);
+                final String orientation = getVlcOrientationStringWhenChanging(orientationValue);
+                final String specificVlcOrientation = getSpecificVlcOrientationString(orientationValue);
 
                 final DeviceEventManagerModule.RCTDeviceEventEmitter deviceEventEmitter = ctx.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
 
 
                 Log.d("data:", "" + orientation);
 
-                if (!orientation.equals(mOrientation)) {
-                    mOrientation = orientation;
+                if (!orientation.equals(mVlcOrientation)) {
+                    mVlcOrientation = orientation;
                     WritableMap params = Arguments.createMap();
                     params.putString("orientation", orientation);
                     deviceEventEmitter.emit("orientationDidChange", params);
                 }
 
-                if (!specificOrientation.equals(mSpecificOrientation)) {
-                    mSpecificOrientation = specificOrientation;
+                if (!specificVlcOrientation.equals(mSpecificVlcOrientation)) {
+                    mSpecificVlcOrientation = specificVlcOrientation;
                     WritableMap params = Arguments.createMap();
-                    params.putString("specificOrientation", specificOrientation);
-                    deviceEventEmitter.emit("specificOrientationDidChange", params);
+                    params.putString("specificVlcOrientation", specificVlcOrientation);
+                    deviceEventEmitter.emit("specificVlcOrientationDidChange", params);
                 }
             }
         };
@@ -159,7 +159,7 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
     }
 
     @ReactMethod
-    public void isOrientationLockedBySystem(Callback callback) {
+    public void isVlcOrientationLockedBySystem(Callback callback) {
         try {
             if (Settings.System.getInt(
                     getReactApplicationContext().getContentResolver(), Settings.System.ACCELEROMETER_ROTATION
@@ -175,14 +175,14 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
 
     @Override
     public String getName() {
-        return "Orientation";
+        return "VlcOrientation";
     }
 
     @ReactMethod
-    public void getOrientation(Callback callback) {
+    public void getVlcOrientation(Callback callback) {
         final int orientationInt = getReactApplicationContext().getResources().getConfiguration().orientation;
 
-        String orientation = this.getOrientationString(orientationInt);
+        String orientation = this.getVlcOrientationString(orientationInt);
 
         if (orientation == "null") {
             callback.invoke(orientationInt, null);
@@ -236,7 +236,7 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
     }
 
     @ReactMethod
-    public void unlockAllOrientations() {
+    public void unlockAllVlcOrientations() {
         final Activity activity = getCurrentActivity();
         if (activity == null) {
             return;
@@ -251,17 +251,17 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
         HashMap<String, Object> constants = new HashMap<String, Object>();
         int orientationInt = getReactApplicationContext().getResources().getConfiguration().orientation;
 
-        String orientation = this.getOrientationString(orientationInt);
+        String orientation = this.getVlcOrientationString(orientationInt);
         if (orientation == "null") {
-            constants.put("initialOrientation", null);
+            constants.put("initialVlcOrientation", null);
         } else {
-            constants.put("initialOrientation", orientation);
+            constants.put("initialVlcOrientation", orientation);
         }
 
         return constants;
     }
 
-    private boolean isDeviceOrientationLocked() {
+    private boolean isDeviceVlcOrientationLocked() {
         final Activity activity = getCurrentActivity();
         if (activity == null) {
             return false;
@@ -284,13 +284,13 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
         return size.x > size.y;
     }
 
-    private String getSpecificOrientationString(int orientationValue) {
+    private String getSpecificVlcOrientationString(int orientationValue) {
         if (orientationValue < 0) return ORIENTATION_UNKNOWN;
         final int index = (int) ((float) orientationValue / 90.0 + 0.5) % 4;
-        return mOrientations[index];
+        return mVlcOrientations[index];
     }
 
-    private String getOrientationString(int orientationValue) {
+    private String getVlcOrientationString(int orientationValue) {
         if (orientationValue == Configuration.ORIENTATION_LANDSCAPE) {
             return "LANDSCAPE";
         } else if (orientationValue == Configuration.ORIENTATION_PORTRAIT) {
@@ -302,9 +302,9 @@ public class OrientationModule extends ReactContextBaseJavaModule implements Lif
         }
     }
 
-    private String getOrientationStringWhenChanging(int orientationValue) {
-        final String specificOrientation = getSpecificOrientationString(orientationValue);
-        switch (specificOrientation) {
+    private String getVlcOrientationStringWhenChanging(int orientationValue) {
+        final String specificVlcOrientation = getSpecificVlcOrientationString(orientationValue);
+        switch (specificVlcOrientation) {
             case LANDSCAPE_LEFT:
             case LANDSCAPE_RIGHT:
                 return LANDSCAPE;

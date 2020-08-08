@@ -1,6 +1,6 @@
 import { DeviceEventEmitter, NativeModules, Platform } from 'react-native'
 
-const { Orientation } = NativeModules
+const { VlcOrientation } = NativeModules
 
 const META = '__listener_id'
 const orientationDidChangeEvent = 'orientationDidChange'
@@ -25,48 +25,48 @@ function getKey(listener) {
 export const DeviceOrientation = {
   HideNavigationBar() {
     if(Platform.OS === 'android')
-      Orientation.HideNavigationBar()
+      VlcOrientation.HideNavigationBar()
     else
       return false
   },
 
   ShowNavigationBar() {
     if(Platform.OS === 'android')
-      Orientation.ShowNavigationBar()
+      VlcOrientation.ShowNavigationBar()
     else
       return false
   },
 
   getOrientation(cb) {
-    Orientation.getOrientation((error,orientation) =>{
+    VlcOrientation.getOrientation((error,orientation) =>{
       cb(error, orientation)
     })
   },
 
   getSpecificOrientation(cb) {
-    Orientation.getSpecificOrientation((error,orientation) =>{
+    VlcOrientation.getSpecificOrientation((error,orientation) =>{
       cb(error, orientation)
     })
   },
 
   lockToPortrait() {
-    Orientation.lockToPortrait()
+    VlcOrientation.lockToPortrait()
   },
 
   lockToLandscape() {
-    Orientation.lockToLandscape()
+    VlcOrientation.lockToLandscape()
   },
 
   lockToLandscapeRight() {
-    Orientation.lockToLandscapeRight()
+    VlcOrientation.lockToLandscapeRight()
   },
 
   lockToLandscapeLeft() {
-    Orientation.lockToLandscapeLeft()
+    VlcOrientation.lockToLandscapeLeft()
   },
 
   unlockAllOrientations() {
-    Orientation.unlockAllOrientations()
+    VlcOrientation.unlockAllOrientations()
   },
 
   addOrientationListener(cb) {
@@ -107,6 +107,6 @@ export const DeviceOrientation = {
   },
 
   getInitialOrientation() {
-    return Orientation.initialOrientation
+    return VlcOrientation.initialOrientation
   }
 }
