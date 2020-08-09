@@ -4,14 +4,6 @@
 
 `$ npm install react-native-vlc-player --save`
 
-## Dependencies
-
-`$ npm install react-native-vector-icons --save`
-
-### Manual installation
-
-Copy Ionicons.ttf from `node_modules/react-native-vector-icons/Fonts` to `android/app/src/main/assets/fonts`
-
 
 #### Android
 

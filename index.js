@@ -6,8 +6,6 @@ import {
   StatusBar
 } from 'react-native'
 
-import Controls from './src/Controls'
-
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
 
@@ -143,16 +141,6 @@ class VlcPlayer extends Component {
               width,
               height
             }} />
-
-          <Controls
-            controls={controls}
-            height={this.state.height}
-            onOrientation={this._handleOrientation}
-            onOverlay={this._handleOverlay}
-            onPlay={this._handlePlay}
-            overlay={overlay}
-            width={this.state.width} />
-
         </View>
       </Fragment>
     )
